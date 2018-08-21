@@ -8,6 +8,13 @@
     "url": "git+https://github.com/delucis/delucis-create.git"
   },
   "bin": "init.js",
+  "files": [
+    "init.js",
+    "index.js",
+    "README.md",
+    "CHANGELOG.md",
+    "template"
+  ],
   "dependencies": {
     "@perl/qx": "^1.0.2",
     "@perl/system": "^1.0.2",
