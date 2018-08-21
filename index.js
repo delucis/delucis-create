@@ -11,12 +11,12 @@ const EXISTS = FS.existsSync
 
 /**
  * Run the package initialisation flow
- * @param  {String}  pkg               Path to the package being initialised
- * @param  {String}  template          Path to the initialiser’s template dir
- * @param  {Object}  opts
- * @param  {String}  opts.github       Github username for package author/org
- * @param  {Array}   [namespaces=[]]   Any namespaces used by the user
- * @param  {Boolean} [interactive=true] Should the initialiser prompt for input?
+ * @param  {String}  pkg                Path to the package being initialised
+ * @param  {String}  template           Path to the initialiser’s template dir
+ * @param  {Object}  o                    Options
+ * @param  {String}  o.github             Github username for package author/org
+ * @param  {Array}   [o.namespaces=[]]    Any npm scopes used by the author
+ * @param  {Boolean} [o.interactive=true] Should the initialiser ask for input?
  * @return {Promise}
  */
 module.exports = async (pkg, template, { github, namespaces, interactive = true } = {}) => {
