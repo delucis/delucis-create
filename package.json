@@ -18,6 +18,7 @@
   "dependencies": {
     "@perl/qx": "^1.0.2",
     "@perl/system": "^1.0.2",
+    "cp-file": "^6.0.0",
     "hosted-git-info": "^2.7.1",
     "read": "^1.0.7"
   },
