@@ -4,10 +4,10 @@ const QX = require('@perl/qx').sync
 const SYS = require('@perl/system').sync
 const GITINFO = require('hosted-git-info')
 const STDIN = require('read')
+const CP = require('cp-file')
 const READ = FS.readFileSync
 const WRITE = FS.writeFileSync
 const EXISTS = FS.existsSync
-const MKDIR = FS.mkdirSync
 
 /**
  * Run the package initialisation flow
@@ -19,14 +19,133 @@ const MKDIR = FS.mkdirSync
  * @param  {Boolean} [interactive=true] Should the initialiser prompt for input?
  * @return {Promise}
  */
-module.exports = async (pkg, template, { github, namespaces = [], interactive = true } = {}) => {
+module.exports = async (pkg, template, { github, namespaces, interactive = true } = {}) => {
   console.log(`Setting up project with @delucis’s defaults...\n\nPress ^C at any time to quit.\n`)
 
-  namespaces = namespaces.join('|')
   let pj = {}
   try { pj = JSON.parse(READ(`${pkg}/package.json`)) } catch (_) {}
   let tj = {}
   try { tj = JSON.parse(READ(`${template}/package.json`)) } catch (_) {}
+
+  pj = await UPDATE_PJ(pj, tj, pkg, { github, namespaces, interactive })
+
+  await WRITE_PJ(pj, pkg, { interactive })
+
+  if (pj.license) {
+    COPY(`LICENSE-${pj.license}`, pkg, template, { dest: 'LICENSE' })
+  }
+  COPY('gitignore', pkg, template, { addDot: true })
+  COPY('travis.yml', pkg, template, { addDot: true })
+  COPY('index.js', pkg, template)
+  COPY('test.js', pkg, template, { dest: 'test/test.js' })
+  COPY('CODE_OF_CONDUCT.md', pkg, template, { msg: 'Copied Code of Conduct' })
+
+  if (!EXISTS(`${pkg}/README.md`)) {
+    let readme = MAKE_README(pj, template)
+    WRITE(`${pkg}/README.md`, readme)
+    console.log('Generated README')
+  }
+
+  GITINIT(pj, pkg)
+  console.log(B('\nDone.'))
+}
+
+/**
+ * Make a string bold/bright with ANSI escape codes
+ * @param  {String} s String to format
+ * @return {String}   Formatted string
+ */
+const B = s => '\u001b[' + 1 + 'm' + s + '\u001b[' + 22 + 'm'
+
+/**
+ * Prompt user for input
+ * @param  {Object} opts      Options passed to read module
+ * @return {Promise<String>}  Promise for the user input string
+ */
+const PROMPT = opts => new Promise((resolve, reject) => {
+  opts.prompt = B(opts.prompt)
+  STDIN(opts, function (err, res, isDefault) {
+    if (err) process.exit(1)
+    if (res) resolve(res)
+  })
+})
+
+/**
+ * Copy a template file to the new project
+ * @param  {String}  src              File name for source to copy
+ * @param  {String}  pkg              Directory of new project
+ * @param  {String}  template         Directory containing template files
+ * @param  {Object}  o                Options object
+ * @param  {String}  [o.dest]         File name to save to if different from src
+ * @param  {Boolean} [o.addDot=false] Should the file name be prefixed with “.”?
+ * @param  {String}  [o.msg]          Custom message to show on copy completion
+ * @return {Promise}
+ */
+const COPY = async (src, pkg, template, { dest, addDot = false, msg } = {}) => {
+  dest = `${addDot ? '.' : ''}${dest || src}`
+  const copyTo = `${pkg}/${dest}`
+  return CP(`${template}/${src}`, copyTo, { overwrite: false })
+    .then(() => { console.log(msg || `Copied “${dest}”`) })
+}
+
+/**
+ * A very simple handlebars-y templating function that supports object props
+ * @param  {String} template    The template string to fill with variables
+ * @param  {Object} vars        The variables used to fill the template
+ * @param  {String} [parent=''] Used internally for recursive calls
+ * @return {String}             The template with {{var}} placeholders replaced
+ */
+const FILL = (template, vars, parent = '') => {
+  return Object.keys(vars).reduce((template, key) => {
+    const path = parent ? `${parent}.${key}` : key
+    if (typeof vars[key] === 'object') {
+      return FILL(template, vars[key], path)
+    }
+    return template.replace(RegExp(`{{${path}}}`, 'g'), vars[key])
+  }, template)
+}
+
+/**
+ * Generate a simple README from package.json
+ * @param  {Object} pj       Object representing contents of package.json
+ * @param  {String} template String indicating template directory
+ * @return {String}          README string
+ */
+const MAKE_README = (pj, template) => {
+  let readme = READ(`${template}/README.md`, 'utf8')
+  readme = FILL(readme, pj)
+  let repo
+  if (pj.repository.url) repo = GETREPO(pj.repository.url)
+  if (repo) {
+    readme = FILL(readme, { repoPath: repo.path() })
+  }
+  return readme
+}
+
+/**
+ * Get a repository object from a URL using hosted-git-info, caching requests
+ * @param  {String} url URL for the repository
+ * @return {Object}     hosted-git-info repository object
+ */
+const GETREPO = url => {
+  if (this[url]) return this[url]
+  this[url] = GITINFO.fromUrl(url)
+  return this[url]
+}
+
+/**
+ * Update a package.json object
+ * @param  {Object}  pj                   Contents of package.json
+ * @param  {Object}  tj                   Contents of package.json defaults
+ * @param  {String}  pkg                  Directory of package being set up
+ * @param  {Object}  o                    Options
+ * @param  {String}  o.github             GitHub username for package author
+ * @param  {Array}   [o.namespaces=[]]    Potential scopes used on npm by author
+ * @param  {Boolean} [o.interactive=true] Should we ask for user input?
+ * @return {Promise<Object>}              Updated contents of package.json
+ */
+const UPDATE_PJ = async (pj, tj, pkg, { github, namespaces = [], interactive = true } = {}) => {
+  namespaces = namespaces.join('|')
 
   if (!pj.name) {
     const pdir = PATH.parse(pkg).name
@@ -88,13 +207,23 @@ module.exports = async (pkg, template, { github, namespaces = [], interactive = 
       }
     }
   }
-  let repo
   if (pj.repository.url) {
-    repo = GITINFO.fromUrl(pj.repository.url)
+    let repo = GETREPO(pj.repository.url)
     if (!pj.bugs) pj.bugs = repo.bugs()
     if (!pj.homepage) pj.homepage = `https://npmjs.com/package/${pj.name}`
   }
 
+  return pj
+}
+
+/**
+ * Write new package.json with optional prompts
+ * @param  {Object}  pj             Contents of package.json
+ * @param  {String}  pkg            Directory of package being set up
+ * @param  {Boolean} [interactive]  Should we prompt to confirm package.json?
+ * @return {Promise}
+ */
+const WRITE_PJ = async (pj, pkg, { interactive }) => {
   const PJ = JSON.stringify(pj, null, 2) + '\n'
   const PJPATH = `${pkg}/package.json`
 
@@ -111,56 +240,22 @@ module.exports = async (pkg, template, { github, namespaces = [], interactive = 
   }
 
   WRITE(PJPATH, PJ)
+
   if (interactive) {
     console.log('Saved package.json')
   } else {
     console.log('Wrote to %s:\n\n%s\n', PJPATH, PJ)
   }
+}
 
-  if (pj.license && !EXISTS(`${pkg}/LICENSE`)) {
-    let data = READ(`${template}/LICENSE-${pj.license}`, 'utf8')
-    if (data) {
-      WRITE(`${pkg}/LICENSE`, data)
-      console.log('Copied LICENSE')
-    }
-  }
-
-  if (!EXISTS(`${pkg}/.gitignore`)) {
-    WRITE(`${pkg}/.gitignore`, READ(`${template}/gitignore`))
-    console.log('Copied .gitignore')
-  }
-
-  if (!EXISTS(`${pkg}/.travis.yml`)) {
-    WRITE(`${pkg}/.travis.yml`, READ(`${template}/travis.yml`))
-    console.log('Copied .travis.yml')
-  }
-
-  if (!EXISTS(`${pkg}/index.js`)) {
-    WRITE(`${pkg}/index.js`, READ(`${template}/index.js`))
-    console.log('Copied index.js')
-  }
-
-  if (!EXISTS(`${pkg}/test`)) MKDIR(`${pkg}/test`)
-  if (!EXISTS(`${pkg}/test/test.js`)) {
-    WRITE(`${pkg}/test/test.js`, READ(`${template}/test.js`))
-    console.log('Copied test/test.js')
-  }
-
-  if (!EXISTS(`${pkg}/CODE_OF_CONDUCT.md`)) {
-    WRITE(`${pkg}/CODE_OF_CONDUCT.md`, READ(`${template}/CODE_OF_CONDUCT.md`))
-    console.log('Copied Code of Conduct')
-  }
-
-  if (!EXISTS(`${pkg}/README.md`)) {
-    let readme = READ(`${template}/README.md`, 'utf8')
-    readme = FILL(readme, pj)
-    if (repo) {
-      readme = FILL(readme, { repoPath: repo.path() })
-    }
-    WRITE(`${pkg}/README.md`, readme)
-    console.log('Generated README')
-  }
-
+/**
+ * Initialse the project as a git repository and configure for GitHub
+ * @param {Object} pj  Contents of package.json
+ * @param {String} pkg Directory of package being set up
+ */
+const GITINIT = (pj, pkg) => {
+  let repo
+  if (pj.repository.url) repo = GETREPO(pj.repository.url)
   if (pj.repository.type === 'git' && repo && !EXISTS(`${pkg}/.git`)) {
     console.log(B('\nSetting up project...'))
     const pwd = process.cwd()
@@ -179,42 +274,4 @@ module.exports = async (pkg, template, { github, namespaces = [], interactive = 
     }
     process.chdir(pwd)
   }
-  console.log(B('\nDone.'))
-}
-
-/**
- * Make a string bold/bright with ANSI escape codes
- * @param  {String} s String to format
- * @return {String}   Formatted string
- */
-const B = s => '\u001b[' + 1 + 'm' + s + '\u001b[' + 22 + 'm'
-
-/**
- * Prompt user for input
- * @param  {Object} opts      Options passed to read module
- * @return {Promise<String>}  Promise for the user input string
- */
-const PROMPT = opts => new Promise((resolve, reject) => {
-  opts.prompt = B(opts.prompt)
-  STDIN(opts, function (err, res, isDefault) {
-    if (err) process.exit(1)
-    if (res) resolve(res)
-  })
-})
-
-/**
- * A very simple handlebars-y templating function that supports object props
- * @param  {String} template    The template string to fill with variables
- * @param  {Object} vars        The variables used to fill the template
- * @param  {String} [parent=''] Used internally for recursive calls
- * @return {String}             The template with {{var}} placeholders replaced
- */
-const FILL = (template, vars, parent = '') => {
-  return Object.keys(vars).reduce((template, key) => {
-    const path = parent ? `${parent}.${key}` : key
-    if (typeof vars[key] === 'object') {
-      return FILL(template, vars[key], path)
-    }
-    return template.replace(RegExp(`{{${path}}}`, 'g'), vars[key])
-  }, template)
 }
