@@ -31,14 +31,18 @@ module.exports = async (pkg, template, { github, namespaces, interactive = true 
 
   await WRITE_PJ(pj, pkg, { interactive })
 
+  let copyTasks = []
   if (pj.license) {
-    COPY(`LICENSE-${pj.license}`, pkg, template, { dest: 'LICENSE' })
+    copyTasks.push(COPY(`LICENSE-${pj.license}`, pkg, template, { dest: 'LICENSE' }))
   }
-  COPY('gitignore', pkg, template, { addDot: true })
-  COPY('travis.yml', pkg, template, { addDot: true })
-  COPY('index.js', pkg, template)
-  COPY('test.js', pkg, template, { dest: 'test/test.js' })
-  COPY('CODE_OF_CONDUCT.md', pkg, template, { msg: 'Copied Code of Conduct' })
+  await Promise.all([
+    ...copyTasks,
+    COPY('gitignore', pkg, template, { addDot: true }),
+    COPY('travis.yml', pkg, template, { addDot: true }),
+    COPY('index.js', pkg, template),
+    COPY('test.js', pkg, template, { dest: 'test/test.js' }),
+    COPY('CODE_OF_CONDUCT.md', pkg, template, { msg: 'Copied Code of Conduct' }),
+  ])
 
   if (!EXISTS(`${pkg}/README.md`)) {
     let readme = MAKE_README(pj, template)
