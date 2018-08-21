@@ -1,0 +1,36 @@
+{
+  "name": "@delucis/create",
+  "description": "Initialise a Node module using @delucis’s defaults",
+  "version": "0.0.1",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delucis/delucis-create.git"
+  },
+  "bin": "init.js",
+  "dependencies": {
+    "@perl/qx": "^1.0.2",
+    "@perl/system": "^1.0.2",
+    "hosted-git-info": "^2.7.1",
+    "read": "^1.0.7"
+  },
+  "bundledDependencies": [
+    "@perl/qx",
+    "@perl/system",
+    "hosted-git-info",
+    "read"
+  ],
+  "scripts": {
+    "prerelease": "npm t",
+    "release": "standard-version -s",
+    "postrelease": "npm publish && git push --follow-tags",
+    "test": "standard"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1",
+    "standard-version": "^4.4.0"
+  },
+  "bugs": "https://github.com/delucis/delucis-create/issues",
+  "homepage": "https://github.com/delucis/delucis-create#readme",
+  "author": "Chris Swithinbank <swithinbank@gmail.com> (http://chrisswithinbank.net/)"
+}

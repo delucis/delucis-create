@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "license": "GPL-3.0",
+  "author": "Chris Swithinbank <swithinbank@gmail.com> (http://chrisswithinbank.net/)",
+  "scripts": {
+    "prerelease": "npm t",
+    "release": "standard-version -s",
+    "postrelease": "npm publish && git push --follow-tags",
+    "pretest": "standard",
+    "test": "nyc ava",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "commitizen": "*",
+    "coveralls": "*",
+    "cz-conventional-changelog": "*",
+    "nyc": "*",
+    "standard": "*",
+    "standard-version": "*"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
