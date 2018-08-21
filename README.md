@@ -1,5 +1,7 @@
 # @delucis/create
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/delucis/delucis-create.svg)](https://greenkeeper.io/)
+
 Initialise a new NPM project using @delucis’s defaults
 
 ```
