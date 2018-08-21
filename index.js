@@ -168,7 +168,7 @@ const UPDATE_PJ = async (pj, tj, pkg, { github, namespaces = [], interactive = t
       default: pj.description || '🆕'
     })
   } else if (!pj.description) {
-    pj.description = ' '
+    pj.description = '🆕'
   }
 
   if (!pj.author) pj.author = tj.author
