@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/delucis/delucis-create/compare/v0.2.1...v0.2.2) (2018-08-21)
+
+
+### Bug Fixes
+
+* **index:** Standardise default package descriptions ([0e404cc](https://github.com/delucis/delucis-create/commit/0e404cc))
+* **index:** Wait for template copying tasks to complete before continuing init ([8a4a115](https://github.com/delucis/delucis-create/commit/8a4a115))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/delucis/delucis-create/compare/v0.2.0...v0.2.1) (2018-08-21)
 
