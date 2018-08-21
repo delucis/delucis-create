@@ -2,10 +2,18 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/delucis/delucis-create.svg)](https://greenkeeper.io/)
 
-Initialise a new NPM project using @delucis’s defaults
+> Initialise a new Node project using @delucis’s defaults
+
+## Usage
 
 ```
 npm init @delucis
+```
+
+If you want to suppress prompts and accept all defaults/assumptions:
+
+```
+npm init @delucis --silent
 ```
 
 ## Includes
