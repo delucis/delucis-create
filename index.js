@@ -41,7 +41,7 @@ module.exports = async (pkg, template, { github, namespaces, interactive = true 
     COPY('travis.yml', pkg, template, { addDot: true }),
     COPY('index.js', pkg, template),
     COPY('test.js', pkg, template, { dest: 'test/test.js' }),
-    COPY('CODE_OF_CONDUCT.md', pkg, template, { msg: 'Copied Code of Conduct' }),
+    COPY('CODE_OF_CONDUCT.md', pkg, template, { msg: 'Copied Code of Conduct' })
   ])
 
   if (!EXISTS(`${pkg}/README.md`)) {
