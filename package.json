@@ -25,6 +25,7 @@
   "bundledDependencies": [
     "@perl/qx",
     "@perl/system",
+    "cp-file",
     "hosted-git-info",
     "read"
   ],
