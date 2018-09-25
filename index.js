@@ -311,3 +311,20 @@ const GH_CREDENTIALS = () => {
   }
   return null
 }
+
+/**
+ * Make a request to the GitHub REST API
+ * @param {String}  endpoint  The endpoint to request, e.g. 'user'
+ * @param {Object}  [data]    Data to pass as form content with the request
+ * @param {String}  [verb]    The HTTP verb to use, e.g. 'PATCH' or 'DELETE'
+ */
+const GH_API = (endpoint, data, verb) => {
+  const cred = GH_CREDENTIALS()
+  let userArg = 'delucis'
+  if (cred) userArg = `${cred.username}:${cred.password}`
+  let dataArg = ''
+  if (data) dataArg = `-d '${JSON.stringify(data)}' `
+  let verbArg = ''
+  if (verb) verbArg = `--request ${verb} `
+  return JSON.parse(QX`curl -sS -u ${userArg} ${dataArg}${verbArg}https://api.github.com/${endpoint}`)
+}
