@@ -295,3 +295,19 @@ const GITINIT = (pj, pkg) => {
     process.chdir(pwd)
   }
 }
+
+/**
+ * Try to retrieve a GitHub { username, password } object from credentials
+ * stored in OS X’s keychain
+ * @return {Object|null}
+ */
+const GH_CREDENTIALS = () => {
+  const credentials = QX`((echo -e "protocol=https\nhost=github.com\n" && cat) | git credential-osxkeychain get) <<< "\n"`
+  const credentialRE = /^password=(.+)\nusername=([\w_-]+)$/
+  const parsed = credentials.match(credentialRE)
+  if (parsed) {
+    const [, password, username] = parsed
+    return { username, password }
+  }
+  return null
+}
