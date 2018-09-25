@@ -20,7 +20,8 @@ const EXISTS = FS.existsSync
  * @return {Promise}
  */
 module.exports = async (pkg, template, { github, namespaces, interactive = true } = {}) => {
-  console.log(`Setting up project with @delucis’s defaults...\n\nPress ^C at any time to quit.\n`)
+  LOG(`Setting up project with @delucis’s defaults...\n`)
+  console.log(`  Press ^C at any time to quit.\n`)
 
   let pj = {}
   try { pj = JSON.parse(READ(`${pkg}/package.json`)) } catch (_) {}
@@ -47,11 +48,12 @@ module.exports = async (pkg, template, { github, namespaces, interactive = true 
   if (!EXISTS(`${pkg}/README.md`)) {
     let readme = MAKE_README(pj, template)
     WRITE(`${pkg}/README.md`, readme)
-    console.log('Generated README')
+    console.log('  Generated README')
   }
 
   GITINIT(pj, pkg)
-  console.log(B('\nDone.'))
+  console.log()
+  LOG('Done.')
 }
 
 /**
@@ -62,12 +64,25 @@ module.exports = async (pkg, template, { github, namespaces, interactive = true 
 const B = s => '\u001b[' + 1 + 'm' + s + '\u001b[' + 22 + 'm'
 
 /**
+ * Make a string blue with ANSI escape codes
+ * @param  {String} s String to format
+ * @return {String}   Formatted string
+ */
+const BLUE = s => '\u001b[' + 34 + 'm' + s + '\u001b[39m'
+
+/**
+ * Log a string with some simple visual highlighting
+ * @param {String} s String to log
+ */
+const LOG = s => console.log(B(BLUE('▶︎ ') + s))
+
+/**
  * Prompt user for input
  * @param  {Object} opts      Options passed to read module
  * @return {Promise<String>}  Promise for the user input string
  */
 const PROMPT = opts => new Promise((resolve, reject) => {
-  opts.prompt = B(opts.prompt)
+  opts.prompt = B(BLUE('▶︎ ') + opts.prompt)
   STDIN(opts, function (err, res, isDefault) {
     if (err) process.exit(1)
     if (res) resolve(res)
@@ -89,7 +104,7 @@ const COPY = async (src, pkg, template, { dest, addDot = false, msg } = {}) => {
   dest = `${addDot ? '.' : ''}${dest || src}`
   const copyTo = `${pkg}/${dest}`
   return CP(`${template}/${src}`, copyTo, { overwrite: false })
-    .then(() => { console.log(msg || `Copied “${dest}”`) })
+    .then(() => { console.log('  ' + (msg || `Copied “${dest}”`)) })
 }
 
 /**
@@ -246,9 +261,9 @@ const WRITE_PJ = async (pj, pkg, { interactive }) => {
   WRITE(PJPATH, PJ)
 
   if (interactive) {
-    console.log('Saved package.json')
+    console.log('  Saved package.json')
   } else {
-    console.log('Wrote to %s:\n\n%s\n', PJPATH, PJ)
+    console.log('  Wrote to %s:\n\n%s\n', PJPATH, PJ)
   }
 }
 
@@ -261,7 +276,8 @@ const GITINIT = (pj, pkg) => {
   let repo
   if (pj.repository.url) repo = GETREPO(pj.repository.url)
   if (pj.repository.type === 'git' && repo && !EXISTS(`${pkg}/.git`)) {
-    console.log(B('\nSetting up project...'))
+    console.log()
+    LOG(B('Setting up project...'))
     const pwd = process.cwd()
     process.chdir(pkg)
     SYS(`git init`)
