@@ -293,6 +293,7 @@ const GITINIT = (pj, pkg) => {
       SYS(`git push -u origin latest`)
     }
     TRAVIS_ADD_TOKEN(repo)
+    CONFIGURE_REPO(repo)
     process.chdir(pwd)
   }
 }
@@ -348,4 +349,17 @@ const TRAVIS_ADD_TOKEN = (repo) => {
   } catch (e) {
     console.error(e)
   }
+}
+
+/**
+ * Disable wiki and projects on GitHub repository
+ * @param {Object} repo Repository object from hosted-git-info
+ */
+const CONFIGURE_REPO = (repo) => {
+  GH_API(`repos/${repo.path()}`, {
+    name: repo.project,
+    has_wiki: false,
+    has_projects: false
+  }, 'PATCH')
+  LOG('Disabled wiki & projects for GitHub repository')
 }
