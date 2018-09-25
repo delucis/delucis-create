@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/delucis/delucis-create/compare/v0.2.2...v0.3.0) (2018-09-25)
+
+
+### Features
+
+* Add conventional commit type to initial commit message ([1acaf2a](https://github.com/delucis/delucis-create/commit/1acaf2a))
+* Disable wiki & projects for new project GitHub repository ([259a6d0](https://github.com/delucis/delucis-create/commit/259a6d0))
+* Get a GitHub access token and add it to .travis.yml on init ([7f818e2](https://github.com/delucis/delucis-create/commit/7f818e2))
+* Improve console log styling ([c6a8c77](https://github.com/delucis/delucis-create/commit/c6a8c77))
+* Try to retrieve GitHub credentials from OS X’s keychain ([350d961](https://github.com/delucis/delucis-create/commit/350d961))
+* Write a simple wrapper for GitHub API requests ([9ab7a65](https://github.com/delucis/delucis-create/commit/9ab7a65))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/delucis/delucis-create/compare/v0.2.1...v0.2.2) (2018-08-21)
 
