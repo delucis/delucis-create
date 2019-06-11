@@ -6,13 +6,15 @@
 
 ## Usage
 
-```
+```sh
+mkdir new-project
+cd new-project
 npm init @delucis
 ```
 
 If you want to suppress prompts and accept all defaults/assumptions:
 
-```
+```sh
 npm init @delucis --silent
 ```
 
