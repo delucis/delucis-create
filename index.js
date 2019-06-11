@@ -3,6 +3,7 @@ const PATH = require('path')
 const QX = require('@perl/qx').sync
 const SYS = require('@perl/system').sync
 const GITINFO = require('hosted-git-info')
+const NPM_UPDATE = require('npm-check-updates')
 const STDIN = require('read')
 const CP = require('cp-file')
 const READ = FS.readFileSync
@@ -231,6 +232,11 @@ const UPDATE_PJ = async (pj, tj, pkg, { github, namespaces = [], interactive = t
     if (!pj.bugs) pj.bugs = repo.bugs()
     if (!pj.homepage) pj.homepage = `https://npmjs.com/package/${pj.name}`
   }
+
+  pj = await NPM_UPDATE.run({
+    jsonAll: true,
+    packageData: JSON.stringify(pj)
+  })
 
   return pj
 }

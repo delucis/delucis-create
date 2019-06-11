@@ -11,13 +11,13 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
-    "ava": "*",
-    "commitizen": "*",
-    "coveralls": "*",
-    "cz-conventional-changelog": "*",
-    "nyc": "*",
-    "standard": "*",
-    "standard-version": "*"
+    "ava": "0.0.0",
+    "commitizen": "0.0.0",
+    "coveralls": "0.0.0",
+    "cz-conventional-changelog": "0.0.0",
+    "nyc": "0.0.0",
+    "standard": "0.0.0",
+    "standard-version": "0.0.0"
   },
   "config": {
     "commitizen": {
