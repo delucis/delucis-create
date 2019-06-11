@@ -1,6 +1,20 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.4.0](https://github.com/delucis/delucis-create/compare/v0.3.0...v0.4.0) (2019-06-11)
+
+
+### Bug Fixes
+
+* Refer to correct branches in badge markup in README template ([a32584c](https://github.com/delucis/delucis-create/commit/a32584c))
+
+
+### Features
+
+* Update to latest dependency versions on init ([67ec717](https://github.com/delucis/delucis-create/commit/67ec717))
+
+
 
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/delucis/delucis-create/compare/v0.2.2...v0.3.0) (2018-09-25)
