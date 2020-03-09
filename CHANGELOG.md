@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/delucis/delucis-create/compare/v0.4.0...v0.5.0) (2020-03-09)
+
+
+### Build System
+
+* **deps:** bump eslint-utils from 1.4.0 to 1.4.2 ([#13](https://github.com/delucis/delucis-create/issues/13)) ([6fd26c3](https://github.com/delucis/delucis-create/commit/6fd26c3))
+* **deps:** bump handlebars from 4.1.2 to 4.5.3 ([#19](https://github.com/delucis/delucis-create/issues/19)) ([ef4594f](https://github.com/delucis/delucis-create/commit/ef4594f))
+* **deps:** bump lodash from 4.17.11 to 4.17.14 ([#15](https://github.com/delucis/delucis-create/issues/15)) ([c63c261](https://github.com/delucis/delucis-create/commit/c63c261))
+
+
+### Features
+
+* Remove Greenkeeper set-up functionality ([2b83b57](https://github.com/delucis/delucis-create/commit/2b83b57))
+
+
+
 ## [0.4.0](https://github.com/delucis/delucis-create/compare/v0.3.0...v0.4.0) (2019-06-11)
 
 
