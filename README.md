@@ -1,6 +1,6 @@
 # @delucis/create
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/delucis/delucis-create.svg)](https://greenkeeper.io/)
+
 
 > Initialise a new Node project using @delucis’s defaults
 
