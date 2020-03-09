@@ -24,7 +24,7 @@ npm init @delucis --silent
   - [StandardJS](https://standardjs.com/) for code style linting
   - [AVA](https://github.com/avajs/ava) unit testing
   - Test coverage with [`nyc`](https://github.com/istanbuljs/nyc) and [Coveralls](https://coveralls.io/)
-  - [Travis-CI](https://travis-ci.com/) configured to use Coveralls and [Greenkeeper](https://greenkeeper.io/) 
+  - [Travis-CI](https://travis-ci.com/) configured to use Coveralls
   - Version release flow with `npm run release`, using [`standard-version`](https://github.com/conventional-changelog/standard-version)
   - Use conventional commits with [`commitizen`](http://commitizen.github.io/cz-cli/) (install globally for ease of running `git cz`)
   - `.gitignore` for Node
