@@ -16,7 +16,7 @@
     "template"
   ],
   "dependencies": {
-    "@perl/qx": "^1.0.3",
+    "@perl/qx": "^1.1.0",
     "@perl/system": "^1.0.2",
     "cp-file": "^9.0.0",
     "hosted-git-info": "^3.0.4",
