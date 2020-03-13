@@ -1,7 +1,7 @@
 {
   "name": "@delucis/create",
   "description": "Initialise a Node module using @delucis’s defaults",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
