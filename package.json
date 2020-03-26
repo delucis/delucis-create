@@ -20,7 +20,7 @@
     "@perl/system": "^1.0.2",
     "cp-file": "^9.0.0",
     "hosted-git-info": "^3.0.4",
-    "npm-check-updates": "^4.0.4",
+    "npm-check-updates": "^4.0.5",
     "read": "^1.0.7"
   },
   "bundledDependencies": [
