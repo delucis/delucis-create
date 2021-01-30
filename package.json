@@ -19,7 +19,7 @@
     "@perl/qx": "^1.1.0",
     "@perl/system": "^1.0.2",
     "cp-file": "^9.0.0",
-    "hosted-git-info": "^3.0.7",
+    "hosted-git-info": "^3.0.8",
     "npm-check-updates": "^4.1.2",
     "read": "^1.0.7"
   },
